@@ -1,10 +1,12 @@
-# Breadth First Search
+## EX NO:02
+## DATE:28.4.22
+# <p align="center">Breadth First Search
 ## AIM
 
 To develop an algorithm to find the route from the source to the destination point using breadth-first search.
 
 ## THEORY
-Breadth-first search, also known as BFS, finds shortest paths from a given source vertex to all other vertices, in terms of the number of edges in the paths.
+Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. It starts at the tree root, and explores all of the neighbour nodes at the present depth prior to moving on to the nodes at the next depth level. BFS is a graph traversal approach in which you start at a source node and layer by layer through the graph, analyzing the nodes directly related to the source node. Then, in BFS traversal, you must move on to the next-level neighbor nodes.
 
 ## DESIGN STEPS
 
@@ -15,7 +17,7 @@ Identify a location in the google map:
 Select a specific number of nodes with distance
 
 ### STEP 3:
-Import required packages.
+Initialize a queue. All nodes in which nearby nodes have already been visited; you must remove them from the queue.Because the queue is now empty, the bfs traversal has ended.
 
 ### STEP 4:
 Include each node and its distance separately in the dictionary data structure.
@@ -25,25 +27,25 @@ End of program.
 
 
 ## ROUTE MAP
-#### Example map
-![Screenshot (286)](https://user-images.githubusercontent.com/75236145/166117310-3cf0ff9c-1f7d-4278-a344-3e454584b5f0.png)
+![Screenshot (281)](https://user-images.githubusercontent.com/75235090/166149090-3f662e7a-3a74-4c38-a02e-b5370d6f3992.png)
 
 
 ## PROGRAM
 ```python
-Student name : M VIGNESH
-Reg.no : 212220233002
- ```
- ```python
- %matplotlib inline
+%matplotlib inline
 import matplotlib.pyplot as plt
 import random
 import math
 import sys
 from collections import defaultdict, deque, Counter
 from itertools import combinations
+```
 
-class Problem(object):
+```python
+# Experiment done by
+# Student name : M VIGNESH
+```
+```python
     def __init__(self, initial=None, goal=None, **kwds): 
         self.__dict__.update(initial=initial, goal=goal, **kwds) 
         
@@ -59,8 +61,8 @@ class Problem(object):
     def __str__(self):
         return '{0}({1}, {2})'.format(
             type(self).__name__, self.initial, self.goal)
-            
 class Node:
+    "A Node in a search tree."
     def __init__(self, state, parent=None, action=None, path_cost=0):
         self.__dict__.update(state=state, parent=parent, action=action, path_cost=path_cost)
 
@@ -70,10 +72,8 @@ class Node:
         return 0 if self.parent is None else (1 + len(self.parent))
     def __lt__(self, other): 
         return self.path_cost < other.path_cost
-        
-failure = Node('failure', path_cost=math.inf) 
-cutoff  = Node('cutoff',  path_cost=math.inf)
-
+failure = Node('failure', path_cost=math.inf) # Indicates an algorithm couldn't find a solution.
+cutoff  = Node('cutoff',  path_cost=math.inf) # Indicates iterative deepening search was cut off.
 def expand(problem, node):
     "Expand a node, generating the children nodes."
     s = node.state
@@ -95,14 +95,13 @@ def path_states(node):
     if node in (cutoff, failure, None): 
         return []
     return path_states(node.parent) + [node.state]
-    
 FIFOQueue = deque
-
 def breadth_first_search(problem):
     "Search shallowest nodes in the search tree first."
     node = Node(problem.initial)
     if problem.is_goal(problem.initial):
         return node
+    # Remove the following comments to initialize the data structure
     frontier = FIFOQueue([node])
     reached = {problem.initial}
     while frontier:
@@ -115,7 +114,6 @@ def breadth_first_search(problem):
                 reached.add(s)
                 frontier.appendleft(child)
     return failure
-    
 class RouteProblem(Problem):
     """A problem to find a route between locations on a `Map`.
     Create a problem with RouteProblem(start, goal, map=Map(...)}).
@@ -137,8 +135,7 @@ class RouteProblem(Problem):
         "Straight-line distance between state and the goal."
         locs = self.map.locations
         return straight_line_distance(locs[node.state], locs[self.goal])
-        
- class Map:
+class Map:
     """A map of places in a 2D world: a graph with vertexes and links between them. 
     In `Map(links, locations)`, `links` can be either [(v1, v2)...] pairs, 
     or a {(v1, v2): distance...} dict. Optional `locations` can be {v1: (x, y)} 
@@ -161,32 +158,57 @@ def multimap(pairs) -> dict:
     for key, val in pairs:
         result[key].append(val)
     return result
-    
-saveetha_nearby_locations = Map(
-    {('SaveethaHospital', 'Chembarambakkam'):  7, ('Chembarambakkam', 'PoonamalleeBridge'): 6, ('PoonamalleeBridge', 'PoonamalleeBusTerminus'): 1, ('PoonamalleeBridge', 'SaveethaDentalCollege'): 3, ('PoonamalleeBusTerminus', 'Kattupakkam'): 2,
-     ('PoonmalleeBusTerminal', 'Mangadu'):4, ('SaveethaDentalCollege', 'Kattupakkam'): 2, ('SaveethaDentalCollege', 'Maduravoyal'):  5, ('Maduravoyal', 'Koyambedu'): 5, ('Koyambedu', 'Vadapalani'): 5, ('Kattupakkam', 'Porur'): 4, 
-     ('Porur', 'Vadapalani'): 8, ('Vadapalani', 'Guindy'):  8, ('Porur', 'Guindy'): 10, ('Mangadu', 'Kundrathur'): 4, ('Kundrathur', 'Porur'): 9, ('Kundrathur', 'Tiruneermalai'): 7, ('Kundrathur', 'Pammal'): 6, ('Pammal', 'Porur'): 10, ('Pammal', 'Guindy'): 14, ('Pammal', 'Airport'): 6, ('Tiruneermalai', 'Balaji college'): 2, ('Balaji college', 'Chrompet'): 2, ('Guindy', 'Velachery'): 4, ('Chrompet', 'Velachery'): 12})
 
 
-r0 = RouteProblem('Maduravoyal', 'Velachery', map=saveetha_nearby_locations)
-r1 = RouteProblem('Chembarambakkam', 'Guindy', map=saveetha_nearby_locations)
-r2 = RouteProblem('PoonamalleeBridge', 'Kundrathur', map=saveetha_nearby_locations)
-r3 = RouteProblem('SaveethaHospital', 'Kattupakkam', map=saveetha_nearby_locations)
-r4 = RouteProblem('Mangadu', 'Guindy', map=saveetha_nearby_locations)
+Home_nearby_locations = Map(
+    {('Kundrathur', 'Madhanandhapuram'): 6, ('Kundrathur', 'Pammal'): 6,
+     ('Madhanandhapuram', 'Porur'): 4, ('Pammal', 'Airport'):5,
+     ('Porur', 'Vadapalani'): 7, ('Porur', 'Maduravoyal'): 4, ('Porur', 'Guindy'): 10, ('Airport', 'Guindy'): 9,
+     ('Vadapalani', 'Home(T.Nagar)'): 4, ('Vadapalani', 'Koyambedu'): 4, ('Maduravoyal', 'Koyambedu'): 5, ('Maduravoyal', 'Ambattur'): 6, ('Guindy', 'Saidapet'): 2,
+     ('Home(T.Nagar)', 'EA Mall'): 5, ('Koyambedu', 'Korattur'): 6, ('Ambattur', 'Madhavaram'): 13, ('Saidapet', 'Home(T.Nagar)'): 4,
+     ('EA Mall', 'Broadway'): 5, ('Korattur', 'Mahavaram'): 10, ('Madhavaram', 'Manali'): 11,
+     ('Broadway', 'Tondiarpet'): 5, ('Broadway', 'Perambur'): 9, ('Manali', 'Tiruvottiyur'): 7,
+     ('Tondiarpet', 'Tiruvottiyur'): 6, ('Perambur', 'Madhavaram'): 5})
 
-goal_state_path=breadth_first_search(r4)
-path_states(goal_state_path) 
-print("GoalStateWithPath:{0}".format(goal_state_path))
-print("Total Distance={0} Kilometers".format(goal_state_path.path_cost))
 
+r0 = RouteProblem('Home(T.Nagar)', 'Tiruvottiyur', map=Home_nearby_locations)
+r1 = RouteProblem('Vadapalani', 'Tiruvottiyur', map=Home_nearby_locations)
+r2 = RouteProblem('Guindy', 'Madhavaram', map=Home_nearby_locations)
+r3 = RouteProblem('Kundrathur', 'Manali', map=Home_nearby_locations)
+r4 = RouteProblem('Perambur', 'Home(T.Nagar)', map=Home_nearby_locations)
+
+
+goal_state_path_0=breadth_first_search(r0)
+goal_state_path_1=breadth_first_search(r1)
+goal_state_path_2=breadth_first_search(r2)
+goal_state_path_3=breadth_first_search(r3)
+goal_state_path_4=breadth_first_search(r4)
+print("GoalStateWithPath:{0}".format(goal_state_path_0))
+print("Total Distance={0} Kilometers".format(goal_state_path_0.path_cost))
+print("Route:{0}".format(path_states(goal_state_path_0)))
+
+print("\nGoalStateWithPath:{0}".format(goal_state_path_1))
+print("Total Distance={0} Kilometers".format(goal_state_path_1.path_cost))
+print("Route:{0}".format(path_states(goal_state_path_1)))
+
+print("\nGoalStateWithPath:{0}".format(goal_state_path_2))
+print("Total Distance={0} Kilometers".format(goal_state_path_2.path_cost))
+print("Route:{0}".format(path_states(goal_state_path_2)))
+print("\nGoalStateWithPath:{0}".format(goal_state_path_3))
+print("Total Distance={0} Kilometers".format(goal_state_path_3.path_cost))
+print("Route:{0}".format(path_states(goal_state_path_3)))
+print("\nGoalStateWithPath:{0}".format(goal_state_path_4))
+print("Total Distance={0} Kilometers".format(goal_state_path_4.path_cost))
+print("Route:{0}".format(path_states(goal_state_path_4)))
 ```
 
 ## OUTPUT:
-![Screenshot (287)](https://user-images.githubusercontent.com/75236145/166117191-25038c57-7d49-4635-bbed-967d80def7cf.png)
+![Screenshot (282)](https://user-images.githubusercontent.com/75235090/166150334-7e029f46-272d-494c-a2d1-9d6af57876e0.png)
+
 
 
 ## SOLUTION JUSTIFICATION:
-Route follow the minimum distance between locations using breadth-first search.
+The Route solutions are found by Breadth First Search algorithm(following FIFO and routes travelling from left to right).
 
 ## RESULT:
-Thus an algorithm to find the route from the source to the destination point using breadth-first search is developed and executed successfully.
+Thus,an algorithm developed to find the route from the source to the destination point using breadth-first search.
